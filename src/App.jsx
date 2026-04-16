@@ -1,9 +1,8 @@
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState } from 'react'
 import './App.css'
 
 const PASSWORD = 'Environ@123'
 const VIDEO_ID = '1D3wU99nIvicT0oX1qaOk93k1L9cV8JBO'
-const HIDE_DELAY = 3000
 
 function EyeIcon({ open }) {
   return open ? (
@@ -32,78 +31,32 @@ function FullscreenIcon() {
 }
 
 function VideoPlayer() {
-  const [btnVisible, setBtnVisible] = useState(true)
-  const [isFullscreen, setIsFullscreen] = useState(false)
-  const videoWrapperRef = useRef(null)
-  const hideTimerRef = useRef(null)
-
-  const scheduleHide = useCallback(() => {
-    clearTimeout(hideTimerRef.current)
-    setBtnVisible(true)
-    hideTimerRef.current = setTimeout(() => setBtnVisible(false), HIDE_DELAY)
-  }, [])
-
-  useEffect(() => {
-    // Start the initial hide countdown
-    scheduleHide()
-
-    function onFullscreenChange() {
-      const inFS = !!(
-        document.fullscreenElement ||
-        document.webkitFullscreenElement ||
-        document.mozFullScreenElement
-      )
-      setIsFullscreen(inFS)
-      // Re-show button briefly when exiting fullscreen
-      if (!inFS) scheduleHide()
-    }
-
-    document.addEventListener('fullscreenchange', onFullscreenChange)
-    document.addEventListener('webkitfullscreenchange', onFullscreenChange)
-    document.addEventListener('mozfullscreenchange', onFullscreenChange)
-
-    return () => {
-      clearTimeout(hideTimerRef.current)
-      document.removeEventListener('fullscreenchange', onFullscreenChange)
-      document.removeEventListener('webkitfullscreenchange', onFullscreenChange)
-      document.removeEventListener('mozfullscreenchange', onFullscreenChange)
-    }
-  }, [scheduleHide])
-
-  function handleMouseMove() {
-    if (!isFullscreen) scheduleHide()
-  }
+  const [showBtn, setShowBtn] = useState(true)
 
   function handleFullscreen() {
-    const el = videoWrapperRef.current
+    const el = document.querySelector('.video-wrapper')
     if (!el) return
     if (el.requestFullscreen) el.requestFullscreen()
     else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen()
     else if (el.mozRequestFullScreen) el.mozRequestFullScreen()
+    setShowBtn(false)
   }
 
   return (
     <div className="player-container">
       <h1 className="title">EnvironSteel</h1>
-      <div
-        className="video-wrapper"
-        ref={videoWrapperRef}
-        onMouseMove={handleMouseMove}
-        onTouchStart={handleMouseMove}
-      >
+      <div className="video-wrapper">
         <iframe
           src={`https://drive.google.com/file/d/${VIDEO_ID}/preview`}
           allow="autoplay; fullscreen"
           allowFullScreen
           title="EnvironSteel Video"
         />
-        <button
-          className={`fullscreen-btn ${btnVisible ? 'visible' : 'hidden'}`}
-          onClick={handleFullscreen}
-          aria-label="Fullscreen"
-        >
-          <FullscreenIcon />
-        </button>
+        {showBtn && (
+          <button className="fullscreen-btn" onClick={handleFullscreen} aria-label="Fullscreen">
+            <FullscreenIcon />
+          </button>
+        )}
       </div>
     </div>
   )

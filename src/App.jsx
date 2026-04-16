@@ -44,13 +44,13 @@ function VideoPlayer() {
 
   return (
     <div className="player-container">
-      <h1 className="title">EnvironSteel</h1>
+      <h1 className="title">EvironSteel</h1>
       <div className="video-wrapper">
         <iframe
           src={`https://drive.google.com/file/d/${VIDEO_ID}/preview`}
           allow="autoplay; fullscreen"
           allowFullScreen
-          title="EnvironSteel Video"
+          title="EvironSteel Video"
         />
         {showBtn && (
           <button className="fullscreen-btn" onClick={handleFullscreen} aria-label="Fullscreen">
@@ -84,7 +84,7 @@ export default function App() {
   return (
     <div className="gate-container">
       <div className="gate-card">
-        <h1 className="title">EnvironSteel</h1>
+        <h1 className="title">EvironSteel</h1>
         <p className="subtitle">Enter the password to watch the video</p>
         <form onSubmit={handleSubmit}>
           <div className="input-wrapper">
